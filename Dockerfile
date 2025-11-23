@@ -1,16 +1,23 @@
 FROM ubuntu:22.04
 
-RUN apt update \
- && apt install -y g++ make cmake curl libboost-all-dev
+# Install dependencies
+RUN apt update && \
+    apt install -y g++ make cmake curl libboost-all-dev && \
+    apt clean
 
 WORKDIR /app
+
+# Copy project files
 COPY . .
 
-# Download crow_all.h (rename to crow.h)
-RUN curl -fsSL "https://sourceforge.net/projects/crow-framework.mirror/files/v1.0%2B4/crow_all.h/download" \
-     -o include/crow.h
+# Download latest Crow single-header (v1.3.0)
+RUN mkdir -p include && \
+    curl -fsSL "https://github.com/CrowCpp/Crow/releases/download/v1.3.0/crow_all.h" \
+        -o include/crow.h
 
+# Build your backend
 RUN make
 
 EXPOSE 18080
+
 CMD ["./cube_backend"]
