@@ -1,23 +1,17 @@
 FROM ubuntu:22.04
 
-# Install dependencies
-RUN apt update && \
-    apt install -y g++ make cmake curl libboost-all-dev && \
-    apt clean
+RUN apt update \
+ && apt install -y g++ make cmake curl libboost-all-dev
 
 WORKDIR /app
-
-# Copy project files
 COPY . .
 
-# Download latest Crow single-header (v1.3.0)
+# Download Crow v1.0+4 (same version your working Dockerfile used)
 RUN mkdir -p include && \
-    curl -fsSL "https://github.com/CrowCpp/Crow/releases/download/v1.3.0/crow_all.h" \
+    curl -fsSL "https://github.com/CrowCpp/Crow/releases/download/v1.0%2B4/crow_all.h" \
         -o include/crow.h
 
-# Build your backend
 RUN make
 
-EXPOSE 18080
-
+EXPOSE 5050
 CMD ["./cube_backend"]
